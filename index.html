@@ -3,26 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TUTA & BARRERA · Hábitos en tiempo real</title>
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Hábitos para dos · Tiempo real</title>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
     }
-
     body {
       background: #0f1219;
       color: white;
       padding: 20px;
       min-height: 100vh;
     }
-
     /* LOGIN */
     #loginScreen {
       position: fixed;
@@ -45,7 +39,7 @@
       max-width: 400px;
     }
     .login-box h2 {
-      background: linear-gradient(145deg, #ffaa00, #ff5577);
+      background: linear-gradient(145deg, #4CAF50, #2196F3);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 20px;
@@ -60,7 +54,7 @@
       border-radius: 16px;
     }
     .login-box button {
-      background: linear-gradient(145deg, #ffaa00, #ff8800);
+      background: linear-gradient(145deg, #4CAF50, #2196F3);
       color: black;
       padding: 15px 30px;
       border: none;
@@ -69,67 +63,41 @@
       cursor: pointer;
       width: 100%;
     }
-
     /* APP (oculta al inicio) */
     .app-container {
-      max-width: 1600px;
+      max-width: 1400px;
       margin: 0 auto;
       display: none;
     }
-
     h1 {
-      background: linear-gradient(145deg, #ffaa00, #ff5577);
+      text-align: center;
+      margin-bottom: 30px;
+      background: linear-gradient(145deg, #4CAF50, #2196F3);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      font-size: 2.5rem;
-      margin-bottom: 20px;
-      text-align: center;
     }
-
-    /* DASHBOARD 3 COLUMNAS */
-    .dashboard {
+    .trackers-row {
       display: flex;
       gap: 20px;
-      margin-top: 20px;
+      flex-wrap: wrap;
     }
-
-    /* COLUMNA TUTA */
-    .columna-tuta {
-      flex: 1;
-      background: rgba(255, 170, 0, 0.05);
-      border-radius: 30px;
-      padding: 20px;
-      border: 1px solid #ffaa00;
-    }
-    .columna-barrera {
-      flex: 1;
-      background: rgba(255, 85, 119, 0.05);
-      border-radius: 30px;
-      padding: 20px;
-      border: 1px solid #ff5577;
-    }
-    .columna-central {
-      flex: 1;
+    .tracker-column {
+      flex: 1 1 450px;
       background: #1a1e2a;
       border-radius: 30px;
       padding: 20px;
-      border: 1px solid #00e0ff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
-
-    .titulo-columna {
+    .tracker-title {
       font-size: 1.8rem;
-      font-weight: 700;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       display: flex;
       align-items: center;
       gap: 10px;
+      border-bottom: 1px solid #3a4050;
+      padding-bottom: 10px;
     }
-    .titulo-tuta { color: #ffaa00; }
-    .titulo-barrera { color: #ff5577; }
-    .titulo-central { color: #00e0ff; }
-
-    /* CONTADOR DE CADA COLUMNA */
-    .contador-columna {
+    .contador {
       background: rgba(0,0,0,0.3);
       padding: 10px 15px;
       border-radius: 60px;
@@ -138,10 +106,6 @@
       justify-content: space-between;
       align-items: center;
     }
-    .contador-numero.tuta { color: #ffaa00; }
-    .contador-numero.barrera { color: #ff5577; }
-
-    /* FORMULARIO HÁBITOS */
     .add-habit {
       display: flex;
       gap: 8px;
@@ -156,21 +120,14 @@
       border-radius: 60px;
     }
     .add-habit button {
-      background: linear-gradient(145deg, #ffaa00, #ff8800);
+      background: #4CAF50;
       color: black;
       font-weight: 700;
       border: none;
       padding: 10px 20px;
       border-radius: 60px;
       cursor: pointer;
-      white-space: nowrap;
     }
-    .add-habit.barrera button {
-      background: linear-gradient(145deg, #ff5577, #ff3366);
-      color: white;
-    }
-
-    /* LISTA DE HÁBITOS (pequeños) */
     .habits-list {
       display: flex;
       flex-wrap: wrap;
@@ -205,8 +162,6 @@
       margin-left: 5px;
     }
     .remove-habit:hover { color: #ff5577; }
-
-    /* CALENDARIO */
     .month-nav {
       display: flex;
       align-items: center;
@@ -282,8 +237,6 @@
       background: transparent;
       min-height: 80px;
     }
-
-    /* GRÁFICO */
     .graph-section {
       background: rgba(0,0,0,0.2);
       border-radius: 30px;
@@ -332,32 +285,13 @@
       background: var(--color);
       color: white;
     }
-
-    /* ESTADÍSTICAS CENTRALES */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-      margin: 20px 0;
-    }
-    .stat-card {
-      background: rgba(0,0,0,0.3);
-      border-radius: 20px;
-      padding: 15px;
+    .summary-percent {
+      font-size: 1.2rem;
+      font-weight: 600;
       text-align: center;
-    }
-    .stat-valor {
-      font-size: 2rem;
-      font-weight: 700;
-    }
-    .comparacion-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-    }
-
-    @media (max-width: 1000px) {
-      .dashboard { flex-direction: column; }
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #3a4050;
     }
   </style>
 </head>
@@ -365,7 +299,7 @@
   <!-- LOGIN -->
   <div id="loginScreen">
     <div class="login-box">
-      <h2>TUTA & BARRERA · HÁBITOS</h2>
+      <h2>TRACKER DE HÁBITOS</h2>
       <input type="password" id="passInput" placeholder="Contraseña">
       <button id="loginBtn">ENTRAR</button>
     </div>
@@ -373,85 +307,55 @@
 
   <!-- APP -->
   <div class="app-container">
-    <h1>TUTA & BARRERA · TRACKER DE HÁBITOS</h1>
-
-    <div class="dashboard">
-      <!-- COLUMNA TUTA -->
-      <div class="columna-tuta" id="colTuta">
-        <div class="titulo-columna titulo-tuta">🧢 TUTA</div>
-        <div class="contador-columna">
+    <h1>📊 HÁBITOS PARA DOS</h1>
+    <div class="trackers-row">
+      <!-- COLUMNA PERSONA 1 -->
+      <div class="tracker-column" id="col1">
+        <div class="tracker-title">🧑 PERSONA 1</div>
+        <div class="contador">
           <span>Mis hábitos</span>
-          <span class="contador-numero tuta" id="totalHabitsTuta">0</span>
+          <span id="totalHabits1">0</span>
         </div>
         <div class="add-habit">
-          <input type="text" id="newHabitTuta" placeholder="nuevo hábito...">
-          <button id="addHabitTuta">➕ Añadir</button>
+          <input type="text" id="newHabit1" placeholder="nuevo hábito...">
+          <button id="addHabit1">➕ Añadir</button>
         </div>
-        <div class="habits-list" id="habitsListTuta"></div>
+        <div class="habits-list" id="habitsList1"></div>
         <div class="month-nav">
-          <button class="prev-month" data-persona="tuta">◀</button>
-          <span class="month-title" id="monthTuta">Mayo 2025</span>
-          <button class="next-month" data-persona="tuta">▶</button>
+          <button class="prev-month" data-persona="1">◀</button>
+          <span class="month-title" id="month1">Mayo 2025</span>
+          <button class="next-month" data-persona="1">▶</button>
         </div>
-        <div class="calendar" id="calendarTuta"></div>
+        <div class="calendar" id="calendar1"></div>
         <div class="graph-section">
-          <div class="graph-title">📊 Progreso mensual</div>
-          <div id="graphTuta"></div>
-          <div class="summary-percent" id="percentTuta">0%</div>
+          <div class="graph-title">📈 Progreso mensual</div>
+          <div id="graph1"></div>
+          <div class="summary-percent" id="percent1">0%</div>
         </div>
       </div>
 
-      <!-- COLUMNA CENTRAL -->
-      <div class="columna-central">
-        <div class="titulo-columna titulo-central">📊 ESTADÍSTICAS</div>
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-valor" id="totalHabitsGlobal">0</div>
-            <div class="stat-label">Hábitos totales</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-valor" id="totalCompletadosGlobal">0</div>
-            <div class="stat-label">Checks totales</div>
-          </div>
-        </div>
-        <div style="background: rgba(0,0,0,0.3); border-radius: 20px; padding: 15px;">
-          <div class="comparacion-item">
-            <span>🧢 Tuta completó</span>
-            <span style="color:#ffaa00" id="completadosTuta">0</span>
-          </div>
-          <div class="comparacion-item">
-            <span>⚡ Barrera completó</span>
-            <span style="color:#ff5577" id="completadosBarrera">0</span>
-          </div>
-          <div class="comparacion-item">
-            <span>📅 Días del mes</span>
-            <span style="color:#00e0ff" id="diasMes">30</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- COLUMNA BARRERA -->
-      <div class="columna-barrera" id="colBarrera">
-        <div class="titulo-columna titulo-barrera">⚡ BARRERA</div>
-        <div class="contador-columna">
+      <!-- COLUMNA PERSONA 2 -->
+      <div class="tracker-column" id="col2">
+        <div class="tracker-title">🧑 PERSONA 2</div>
+        <div class="contador">
           <span>Mis hábitos</span>
-          <span class="contador-numero barrera" id="totalHabitsBarrera">0</span>
+          <span id="totalHabits2">0</span>
         </div>
-        <div class="add-habit barrera">
-          <input type="text" id="newHabitBarrera" placeholder="nuevo hábito...">
-          <button id="addHabitBarrera">➕ Añadir</button>
+        <div class="add-habit">
+          <input type="text" id="newHabit2" placeholder="nuevo hábito...">
+          <button id="addHabit2">➕ Añadir</button>
         </div>
-        <div class="habits-list" id="habitsListBarrera"></div>
+        <div class="habits-list" id="habitsList2"></div>
         <div class="month-nav">
-          <button class="prev-month" data-persona="barrera">◀</button>
-          <span class="month-title" id="monthBarrera">Mayo 2025</span>
-          <button class="next-month" data-persona="barrera">▶</button>
+          <button class="prev-month" data-persona="2">◀</button>
+          <span class="month-title" id="month2">Mayo 2025</span>
+          <button class="next-month" data-persona="2">▶</button>
         </div>
-        <div class="calendar" id="calendarBarrera"></div>
+        <div class="calendar" id="calendar2"></div>
         <div class="graph-section">
-          <div class="graph-title">📊 Progreso mensual</div>
-          <div id="graphBarrera"></div>
-          <div class="summary-percent" id="percentBarrera">0%</div>
+          <div class="graph-title">📈 Progreso mensual</div>
+          <div id="graph2"></div>
+          <div class="summary-percent" id="percent2">0%</div>
         </div>
       </div>
     </div>
@@ -460,9 +364,8 @@
   <!-- FIREBASE -->
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js';
-    import { getDatabase, ref, onValue, push, update, remove, set } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js';
+    import { getDatabase, ref, onValue, set } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js';
 
-    // Configuración de Firebase (la misma)
     const firebaseConfig = {
       apiKey: "AIzaSyD8Z8M5TL-SU3oMFYULFaIzhBrD9yObXwo",
       authDomain: "papucholangas.firebaseapp.com",
@@ -476,11 +379,11 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Referencias
-    const tutaHabitsRef = ref(db, 'tuta/habits');
-    const tutaCompletionsRef = ref(db, 'tuta/completions');
-    const barreraHabitsRef = ref(db, 'barrera/habits');
-    const barreraCompletionsRef = ref(db, 'barrera/completions');
+    // Referencias Firebase para cada persona
+    const persona1HabitsRef = ref(db, 'persona1/habits');
+    const persona1CompletionsRef = ref(db, 'persona1/completions');
+    const persona2HabitsRef = ref(db, 'persona2/habits');
+    const persona2CompletionsRef = ref(db, 'persona2/completions');
 
     // Elementos DOM
     const loginScreen = document.getElementById('loginScreen');
@@ -525,32 +428,32 @@
     }
 
     // Estados locales
-    let tutaState = { habits: [], completions: {} };
-    let barreraState = { habits: [], completions: {} };
+    let persona1 = { habits: [], completions: {} };
+    let persona2 = { habits: [], completions: {} };
 
     // Fechas independientes
-    let tutaDate = new Date();
-    let barreraDate = new Date();
-    let tutaYear = tutaDate.getFullYear();
-    let tutaMonth = tutaDate.getMonth();
-    let barreraYear = barreraDate.getFullYear();
-    let barreraMonth = barreraDate.getMonth();
+    let date1 = new Date();
+    let date2 = new Date();
+    let year1 = date1.getFullYear();
+    let month1 = date1.getMonth();
+    let year2 = date2.getFullYear();
+    let month2 = date2.getMonth();
 
-    // Escuchar Firebase
-    onValue(tutaHabitsRef, (snapshot) => {
-      tutaState.habits = snapshot.val() || [];
+    // Escuchar cambios en Firebase
+    onValue(persona1HabitsRef, (snapshot) => {
+      persona1.habits = snapshot.val() || [];
       actualizarTodo();
     });
-    onValue(tutaCompletionsRef, (snapshot) => {
-      tutaState.completions = snapshot.val() || {};
+    onValue(persona1CompletionsRef, (snapshot) => {
+      persona1.completions = snapshot.val() || {};
       actualizarTodo();
     });
-    onValue(barreraHabitsRef, (snapshot) => {
-      barreraState.habits = snapshot.val() || [];
+    onValue(persona2HabitsRef, (snapshot) => {
+      persona2.habits = snapshot.val() || [];
       actualizarTodo();
     });
-    onValue(barreraCompletionsRef, (snapshot) => {
-      barreraState.completions = snapshot.val() || {};
+    onValue(persona2CompletionsRef, (snapshot) => {
+      persona2.completions = snapshot.val() || {};
       actualizarTodo();
     });
 
@@ -566,39 +469,25 @@
     }
 
     function actualizarTodo() {
-      // Contadores
-      document.getElementById('totalHabitsTuta').innerText = tutaState.habits.length;
-      document.getElementById('totalHabitsBarrera').innerText = barreraState.habits.length;
-      document.getElementById('totalHabitsGlobal').innerText = tutaState.habits.length + barreraState.habits.length;
+      // Contadores de hábitos
+      document.getElementById('totalHabits1').innerText = persona1.habits.length;
+      document.getElementById('totalHabits2').innerText = persona2.habits.length;
 
-      const tutaChecks = calcularChecksMes(tutaState, tutaYear, tutaMonth);
-      const barreraChecks = calcularChecksMes(barreraState, barreraYear, barreraMonth);
-      document.getElementById('completadosTuta').innerText = tutaChecks;
-      document.getElementById('completadosBarrera').innerText = barreraChecks;
-      document.getElementById('totalCompletadosGlobal').innerText = tutaChecks + barreraChecks;
-
-      const days = getDaysInMonth(tutaYear, tutaMonth);
-      document.getElementById('diasMes').innerText = days;
-
-      renderPersona('tuta');
-      renderPersona('barrera');
+      renderPersona(1, persona1, year1, month1);
+      renderPersona(2, persona2, year2, month2);
     }
 
-    function renderPersona(persona) {
-      const state = persona === 'tuta' ? tutaState : barreraState;
-      const year = persona === 'tuta' ? tutaYear : barreraYear;
-      const month = persona === 'tuta' ? tutaMonth : barreraMonth;
+    function renderPersona(num, state, year, month) {
       const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-
-      document.getElementById(`month${persona === 'tuta' ? 'Tuta' : 'Barrera'}`).innerText = `${monthNames[month]} ${year}`;
+      document.getElementById(`month${num}`).innerText = `${monthNames[month]} ${year}`;
 
       // Lista de hábitos
-      const habitsListDiv = document.getElementById(`habitsList${persona === 'tuta' ? 'Tuta' : 'Barrera'}`);
+      const habitsListDiv = document.getElementById(`habitsList${num}`);
       habitsListDiv.innerHTML = state.habits.map(habit => `
         <div class="habit-item">
           <span class="habit-color" style="background:${habit.color}"></span>
           <span class="habit-name">${habit.name}</span>
-          <button class="remove-habit" data-persona="${persona}" data-id="${habit.id}">✕</button>
+          <button class="remove-habit" data-persona="${num}" data-id="${habit.id}">✕</button>
         </div>
       `).join('');
 
@@ -618,13 +507,13 @@
           const done = dayCompletions[habit.id] || false;
           calendarHtml += `<div class="habit-circle ${done ? 'done' : ''}" 
             style="background:${done ? habit.color : '#2a2f3a'};" 
-            data-persona="${persona}" 
+            data-persona="${num}" 
             data-date="${dateStr}" 
             data-habit-id="${habit.id}"></div>`;
         });
         calendarHtml += '</div></div>';
       }
-      document.getElementById(`calendar${persona === 'tuta' ? 'Tuta' : 'Barrera'}`).innerHTML = calendarHtml;
+      document.getElementById(`calendar${num}`).innerHTML = calendarHtml;
 
       // Gráfico
       let graphHtml = '';
@@ -649,24 +538,24 @@
           </div>
         `;
       });
-      document.getElementById(`graph${persona === 'tuta' ? 'Tuta' : 'Barrera'}`).innerHTML = graphHtml || '<div style="color:#a0a8c0">Sin hábitos</div>';
+      document.getElementById(`graph${num}`).innerHTML = graphHtml || '<div style="color:#a0a8c0">Sin hábitos</div>';
 
       // Porcentaje total
       const totalChecks = calcularChecksMes(state, year, month);
       const maxChecks = state.habits.length * daysInMonth;
       const percentTotal = maxChecks ? ((totalChecks / maxChecks) * 100).toFixed(1) : 0;
-      document.getElementById(`percent${persona === 'tuta' ? 'Tuta' : 'Barrera'}`).innerText = `${percentTotal}% completado`;
+      document.getElementById(`percent${num}`).innerText = `${percentTotal}% completado`;
     }
 
     // Eventos (delegación)
     document.addEventListener('click', (e) => {
       // Eliminar hábito
       if (e.target.classList.contains('remove-habit')) {
-        const persona = e.target.dataset.persona;
+        const num = e.target.dataset.persona;
         const habitId = e.target.dataset.id;
-        const refHabits = persona === 'tuta' ? tutaHabitsRef : barreraHabitsRef;
-        const refCompletions = persona === 'tuta' ? tutaCompletionsRef : barreraCompletionsRef;
-        const state = persona === 'tuta' ? tutaState : barreraState;
+        const refHabits = num === '1' ? persona1HabitsRef : persona2HabitsRef;
+        const refCompletions = num === '1' ? persona1CompletionsRef : persona2CompletionsRef;
+        const state = num === '1' ? persona1 : persona2;
 
         const newHabits = state.habits.filter(h => h.id !== habitId);
         set(refHabits, newHabits);
@@ -683,11 +572,11 @@
 
       // Marcar/desmarcar círculo
       if (e.target.classList.contains('habit-circle')) {
-        const persona = e.target.dataset.persona;
+        const num = e.target.dataset.persona;
         const date = e.target.dataset.date;
         const habitId = e.target.dataset.habitId;
-        const refCompletions = persona === 'tuta' ? tutaCompletionsRef : barreraCompletionsRef;
-        const state = persona === 'tuta' ? tutaState : barreraState;
+        const refCompletions = num === '1' ? persona1CompletionsRef : persona2CompletionsRef;
+        const state = num === '1' ? persona1 : persona2;
 
         const completions = { ...state.completions };
         if (!completions[date]) completions[date] = {};
@@ -701,43 +590,43 @@
     });
 
     // Añadir hábito
-    document.getElementById('addHabitTuta').addEventListener('click', () => {
-      const input = document.getElementById('newHabitTuta');
+    document.getElementById('addHabit1').addEventListener('click', () => {
+      const input = document.getElementById('newHabit1');
       const name = input.value.trim();
       if (!name) return;
       const newHabit = {
         id: generateId(),
         name,
-        color: PASTEL_COLORS[tutaState.habits.length % PASTEL_COLORS.length]
+        color: PASTEL_COLORS[persona1.habits.length % PASTEL_COLORS.length]
       };
-      set(tutaHabitsRef, [...tutaState.habits, newHabit]);
+      set(persona1HabitsRef, [...persona1.habits, newHabit]);
       input.value = '';
     });
 
-    document.getElementById('addHabitBarrera').addEventListener('click', () => {
-      const input = document.getElementById('newHabitBarrera');
+    document.getElementById('addHabit2').addEventListener('click', () => {
+      const input = document.getElementById('newHabit2');
       const name = input.value.trim();
       if (!name) return;
       const newHabit = {
         id: generateId(),
         name,
-        color: PASTEL_COLORS[barreraState.habits.length % PASTEL_COLORS.length]
+        color: PASTEL_COLORS[persona2.habits.length % PASTEL_COLORS.length]
       };
-      set(barreraHabitsRef, [...barreraState.habits, newHabit]);
+      set(persona2HabitsRef, [...persona2.habits, newHabit]);
       input.value = '';
     });
 
     // Navegación meses
     document.querySelectorAll('.prev-month').forEach(btn => {
       btn.addEventListener('click', () => {
-        const persona = btn.dataset.persona;
-        if (persona === 'tuta') {
-          tutaMonth--;
-          if (tutaMonth < 0) { tutaMonth = 11; tutaYear--; }
+        const num = btn.dataset.persona;
+        if (num === '1') {
+          month1--;
+          if (month1 < 0) { month1 = 11; year1--; }
           actualizarTodo();
         } else {
-          barreraMonth--;
-          if (barreraMonth < 0) { barreraMonth = 11; barreraYear--; }
+          month2--;
+          if (month2 < 0) { month2 = 11; year2--; }
           actualizarTodo();
         }
       });
@@ -745,25 +634,25 @@
 
     document.querySelectorAll('.next-month').forEach(btn => {
       btn.addEventListener('click', () => {
-        const persona = btn.dataset.persona;
-        if (persona === 'tuta') {
-          tutaMonth++;
-          if (tutaMonth > 11) { tutaMonth = 0; tutaYear++; }
+        const num = btn.dataset.persona;
+        if (num === '1') {
+          month1++;
+          if (month1 > 11) { month1 = 0; year1++; }
           actualizarTodo();
         } else {
-          barreraMonth++;
-          if (barreraMonth > 11) { barreraMonth = 0; barreraYear++; }
+          month2++;
+          if (month2 > 11) { month2 = 0; year2++; }
           actualizarTodo();
         }
       });
     });
 
     // Enter en inputs
-    document.getElementById('newHabitTuta').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') document.getElementById('addHabitTuta').click();
+    document.getElementById('newHabit1').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') document.getElementById('addHabit1').click();
     });
-    document.getElementById('newHabitBarrera').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') document.getElementById('addHabitBarrera').click();
+    document.getElementById('newHabit2').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') document.getElementById('addHabit2').click();
     });
   </script>
 </body>
