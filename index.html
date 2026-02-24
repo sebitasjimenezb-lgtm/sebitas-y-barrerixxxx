@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hábitos Tuta & Barrera · Tiempo real</title>
+  <title>TUTA & BARRERA · Hábitos en tiempo real</title>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -457,12 +457,12 @@
     </div>
   </div>
 
-  <!-- FIREBASE (módulo) -->
+  <!-- FIREBASE -->
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js';
-    import { getDatabase, ref, onValue, push, update, remove } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js';
+    import { getDatabase, ref, onValue, push, update, remove, set } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js';
 
-    // Configuración de Firebase (la misma del código anterior)
+    // Configuración de Firebase (la misma)
     const firebaseConfig = {
       apiKey: "AIzaSyD8Z8M5TL-SU3oMFYULFaIzhBrD9yObXwo",
       authDomain: "papucholangas.firebaseapp.com",
@@ -476,19 +476,19 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Referencias a los nodos de cada persona
+    // Referencias
     const tutaHabitsRef = ref(db, 'tuta/habits');
     const tutaCompletionsRef = ref(db, 'tuta/completions');
     const barreraHabitsRef = ref(db, 'barrera/habits');
     const barreraCompletionsRef = ref(db, 'barrera/completions');
 
-    // Elementos del DOM
+    // Elementos DOM
     const loginScreen = document.getElementById('loginScreen');
     const passInput = document.getElementById('passInput');
     const loginBtn = document.getElementById('loginBtn');
     const appContainer = document.querySelector('.app-container');
 
-    // Login con contraseña "puta"
+    // Login
     loginBtn.addEventListener('click', () => {
       if (passInput.value === 'puta') {
         loginScreen.style.display = 'none';
@@ -501,7 +501,7 @@
       if (e.key === 'Enter') loginBtn.click();
     });
 
-    // ========== UTILIDADES ==========
+    // Utilidades
     const PASTEL_COLORS = [
       '#FFB6C1', '#B0E0E6', '#C1E1C1', '#FFDAB9', '#E6E6FA',
       '#F0E68C', '#D8BFD8', '#B0C4DE', '#F08080', '#AFEEEE',
@@ -524,11 +524,11 @@
       return new Date(year, month, 1).getDay();
     }
 
-    // ========== ESTADO LOCAL (se actualiza con Firebase) ==========
+    // Estados locales
     let tutaState = { habits: [], completions: {} };
     let barreraState = { habits: [], completions: {} };
 
-    // Fechas actuales para cada persona (independientes)
+    // Fechas independientes
     let tutaDate = new Date();
     let barreraDate = new Date();
     let tutaYear = tutaDate.getFullYear();
@@ -536,45 +536,23 @@
     let barreraYear = barreraDate.getFullYear();
     let barreraMonth = barreraDate.getMonth();
 
-    // ========== ESCUCHAR CAMBIOS EN FIREBASE ==========
+    // Escuchar Firebase
     onValue(tutaHabitsRef, (snapshot) => {
       tutaState.habits = snapshot.val() || [];
-      actualizarContadoresYRender();
+      actualizarTodo();
     });
     onValue(tutaCompletionsRef, (snapshot) => {
       tutaState.completions = snapshot.val() || {};
-      actualizarContadoresYRender();
+      actualizarTodo();
     });
     onValue(barreraHabitsRef, (snapshot) => {
       barreraState.habits = snapshot.val() || [];
-      actualizarContadoresYRender();
+      actualizarTodo();
     });
     onValue(barreraCompletionsRef, (snapshot) => {
       barreraState.completions = snapshot.val() || {};
-      actualizarContadoresYRender();
+      actualizarTodo();
     });
-
-    function actualizarContadoresYRender() {
-      // Actualizar contadores de número de hábitos
-      document.getElementById('totalHabitsTuta').innerText = tutaState.habits.length;
-      document.getElementById('totalHabitsBarrera').innerText = barreraState.habits.length;
-      document.getElementById('totalHabitsGlobal').innerText = tutaState.habits.length + barreraState.habits.length;
-
-      // Calcular total de checks en el mes actual para cada persona
-      const tutaChecks = calcularChecksMes(tutaState, tutaYear, tutaMonth);
-      const barreraChecks = calcularChecksMes(barreraState, barreraYear, barreraMonth);
-      document.getElementById('completadosTuta').innerText = tutaChecks;
-      document.getElementById('completadosBarrera').innerText = barreraChecks;
-      document.getElementById('totalCompletadosGlobal').innerText = tutaChecks + barreraChecks;
-
-      // Días del mes actual (para la columna central, mostramos el de Tuta, por ejemplo)
-      const days = getDaysInMonth(tutaYear, tutaMonth);
-      document.getElementById('diasMes').innerText = days;
-
-      // Renderizar todo
-      renderizarPersona('tuta');
-      renderizarPersona('barrera');
-    }
 
     function calcularChecksMes(state, year, month) {
       let total = 0;
@@ -587,17 +565,34 @@
       return total;
     }
 
-    // ========== RENDERIZADO ==========
-    function renderizarPersona(persona) {
+    function actualizarTodo() {
+      // Contadores
+      document.getElementById('totalHabitsTuta').innerText = tutaState.habits.length;
+      document.getElementById('totalHabitsBarrera').innerText = barreraState.habits.length;
+      document.getElementById('totalHabitsGlobal').innerText = tutaState.habits.length + barreraState.habits.length;
+
+      const tutaChecks = calcularChecksMes(tutaState, tutaYear, tutaMonth);
+      const barreraChecks = calcularChecksMes(barreraState, barreraYear, barreraMonth);
+      document.getElementById('completadosTuta').innerText = tutaChecks;
+      document.getElementById('completadosBarrera').innerText = barreraChecks;
+      document.getElementById('totalCompletadosGlobal').innerText = tutaChecks + barreraChecks;
+
+      const days = getDaysInMonth(tutaYear, tutaMonth);
+      document.getElementById('diasMes').innerText = days;
+
+      renderPersona('tuta');
+      renderPersona('barrera');
+    }
+
+    function renderPersona(persona) {
       const state = persona === 'tuta' ? tutaState : barreraState;
       const year = persona === 'tuta' ? tutaYear : barreraYear;
       const month = persona === 'tuta' ? tutaMonth : barreraMonth;
       const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
-      // Título del mes
       document.getElementById(`month${persona === 'tuta' ? 'Tuta' : 'Barrera'}`).innerText = `${monthNames[month]} ${year}`;
 
-      // Lista de hábitos (para eliminar)
+      // Lista de hábitos
       const habitsListDiv = document.getElementById(`habitsList${persona === 'tuta' ? 'Tuta' : 'Barrera'}`);
       habitsListDiv.innerHTML = state.habits.map(habit => `
         <div class="habit-item">
@@ -656,28 +651,26 @@
       });
       document.getElementById(`graph${persona === 'tuta' ? 'Tuta' : 'Barrera'}`).innerHTML = graphHtml || '<div style="color:#a0a8c0">Sin hábitos</div>';
 
-      // Porcentaje total del mes
+      // Porcentaje total
       const totalChecks = calcularChecksMes(state, year, month);
       const maxChecks = state.habits.length * daysInMonth;
       const percentTotal = maxChecks ? ((totalChecks / maxChecks) * 100).toFixed(1) : 0;
       document.getElementById(`percent${persona === 'tuta' ? 'Tuta' : 'Barrera'}`).innerText = `${percentTotal}% completado`;
     }
 
-    // ========== EVENTOS (se delegan) ==========
+    // Eventos (delegación)
     document.addEventListener('click', (e) => {
-      // Botones de eliminar hábito
+      // Eliminar hábito
       if (e.target.classList.contains('remove-habit')) {
         const persona = e.target.dataset.persona;
         const habitId = e.target.dataset.id;
         const refHabits = persona === 'tuta' ? tutaHabitsRef : barreraHabitsRef;
         const refCompletions = persona === 'tuta' ? tutaCompletionsRef : barreraCompletionsRef;
-        
-        // Obtener estado actual y filtrar
         const state = persona === 'tuta' ? tutaState : barreraState;
+
         const newHabits = state.habits.filter(h => h.id !== habitId);
         set(refHabits, newHabits);
 
-        // También eliminar de completions (en Firebase, podemos hacer update eliminando la propiedad)
         const completions = { ...state.completions };
         Object.keys(completions).forEach(date => {
           if (completions[date][habitId] !== undefined) {
@@ -688,7 +681,7 @@
         set(refCompletions, completions);
       }
 
-      // Círculos de hábitos (marcar/desmarcar)
+      // Marcar/desmarcar círculo
       if (e.target.classList.contains('habit-circle')) {
         const persona = e.target.dataset.persona;
         const date = e.target.dataset.date;
@@ -696,14 +689,14 @@
         const refCompletions = persona === 'tuta' ? tutaCompletionsRef : barreraCompletionsRef;
         const state = persona === 'tuta' ? tutaState : barreraState;
 
-        const currentCompletions = { ...state.completions };
-        if (!currentCompletions[date]) currentCompletions[date] = {};
-        currentCompletions[date][habitId] = !currentCompletions[date][habitId];
-        if (currentCompletions[date][habitId] === false) {
-          delete currentCompletions[date][habitId];
-          if (Object.keys(currentCompletions[date]).length === 0) delete currentCompletions[date];
+        const completions = { ...state.completions };
+        if (!completions[date]) completions[date] = {};
+        completions[date][habitId] = !completions[date][habitId];
+        if (completions[date][habitId] === false) {
+          delete completions[date][habitId];
+          if (Object.keys(completions[date]).length === 0) delete completions[date];
         }
-        set(refCompletions, currentCompletions);
+        set(refCompletions, completions);
       }
     });
 
@@ -717,8 +710,7 @@
         name,
         color: PASTEL_COLORS[tutaState.habits.length % PASTEL_COLORS.length]
       };
-      const newHabits = [...tutaState.habits, newHabit];
-      set(tutaHabitsRef, newHabits);
+      set(tutaHabitsRef, [...tutaState.habits, newHabit]);
       input.value = '';
     });
 
@@ -731,8 +723,7 @@
         name,
         color: PASTEL_COLORS[barreraState.habits.length % PASTEL_COLORS.length]
       };
-      const newHabits = [...barreraState.habits, newHabit];
-      set(barreraHabitsRef, newHabits);
+      set(barreraHabitsRef, [...barreraState.habits, newHabit]);
       input.value = '';
     });
 
@@ -743,11 +734,11 @@
         if (persona === 'tuta') {
           tutaMonth--;
           if (tutaMonth < 0) { tutaMonth = 11; tutaYear--; }
-          renderizarPersona('tuta');
+          actualizarTodo();
         } else {
           barreraMonth--;
           if (barreraMonth < 0) { barreraMonth = 11; barreraYear--; }
-          renderizarPersona('barrera');
+          actualizarTodo();
         }
       });
     });
@@ -758,16 +749,16 @@
         if (persona === 'tuta') {
           tutaMonth++;
           if (tutaMonth > 11) { tutaMonth = 0; tutaYear++; }
-          renderizarPersona('tuta');
+          actualizarTodo();
         } else {
           barreraMonth++;
           if (barreraMonth > 11) { barreraMonth = 0; barreraYear++; }
-          renderizarPersona('barrera');
+          actualizarTodo();
         }
       });
     });
 
-    // Pequeña ayuda: permitir añadir con Enter
+    // Enter en inputs
     document.getElementById('newHabitTuta').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') document.getElementById('addHabitTuta').click();
     });
