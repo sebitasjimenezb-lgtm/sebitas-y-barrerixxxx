@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracker de Hábitos</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: #f5f5f5;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 25px;
+        }
+        h1 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-weight: 400;
+        }
+        .month-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            background: #f0f0f0;
+            padding: 10px 15px;
+            border-radius: 40px;
+        }
+        .month-nav button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .month-nav button:hover {
+            background: #ddd;
+        }
+        .month-title {
+            font-size: 1.4rem;
+            font-weight: 500;
+        }
+        .habits-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+            align-items: center;
+            background: #fafafa;
+            padding: 15px;
+            border-radius: 20px;
+        }
+        .habit-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            padding: 8px 15px;
+            border-radius: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .habit-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        .habit-name {
+            font-size: 0.95rem;
+        }
+        .remove-habit {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 1.2rem;
+            line-height: 1;
+            padding: 0 5px;
+        }
+        .remove-habit:hover {
+            color: #f00;
+        }
+        .add-habit {
+            display: flex;
+            gap: 8px;
+            margin-left: auto;
+        }
+        .add-habit input {
+            padding: 8px 15px;
+            border: 1px solid #ccc;
+            border-radius: 30px;
+            font-size: 0.95rem;
+        }
+        .add-habit button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+        }
+        .add-habit button:hover {
+            background: #45a049;
+        }
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-bottom: 30px;
+        }
+        .weekday {
+            text-align: center;
+            font-weight: 500;
+            color: #666;
+            padding: 10px 0;
+        }
+        .day-cell {
+            background: #f9f9f9;
+            border-radius: 12px;
+            padding: 10px 5px;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid #eee;
+        }
+        .day-number {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        .habits-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+        }
+        .habit-circle {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+            border: 2px solid rgba(0,0,0,0.1);
+        }
+        .habit-circle.done {
+            border: 2px solid rgba(0,0,0,0.2);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .habit-circle:hover {
+            transform: scale(1.15);
+        }
+        .empty-cell {
+            background: transparent;
+            border: none;
+            min-height: 100px;
+        }
+        .graph-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 20px;
+        }
+        .graph-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .habit-graph {
+            margin-bottom: 25px;
+        }
+        .habit-graph-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        .habit-graph-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        .habit-graph-name {
+            font-weight: 500;
+        }
+        .habit-graph-percent {
+            margin-left: auto;
+            font-size: 0.9rem;
+            color: #555;
+        }
+        .graph-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 5px;
+        }
+        .graph-day {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: #333;
+            position: relative;
+        }
+        .graph-day.done {
+            background: var(--color);
+            color: white;
+            font-weight: bold;
+        }
+        .graph-day-number {
+            position: absolute;
+            bottom: 1px;
+            right: 2px;
+            font-size: 0.6rem;
+            opacity: 0.7;
+        }
+        .summary-percent {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+        .reset-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            float: right;
+        }
+        .reset-btn:hover {
+            background: #ff5252;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Tracker de Hábitos <button class="reset-btn" id="resetBtn">🗑️ Resetear datos</button></h1>
+
+    <div class="habits-list" id="habitsListContainer">
+        <!-- Los hábitos se renderizan aquí -->
+        <div class="add-habit">
+            <input type="text" id="newHabitName" placeholder="Nuevo hábito...">
+            <button id="addHabitBtn">Añadir</button>
+        </div>
+    </div>
+
+    <div class="month-nav">
+        <button id="prevMonth">&lt;</button>
+        <span class="month-title" id="monthYear">Mayo 2025</span>
+        <button id="nextMonth">&gt;</button>
+    </div>
+
+    <div class="calendar" id="calendar">
+        <!-- Días de la semana y celdas se generan aquí -->
+    </div>
+
+    <div class="graph-section">
+        <div class="graph-title">Progreso mensual</div>
+        <div id="graphContainer"></div>
+        <div class="summary-percent" id="overallPercent">0% completado</div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // Estado de la aplicación
+        let habits = [];
+        let completions = {}; // { "YYYY-MM-DD": { habitId: true/false } }
+        let currentDate = new Date();
+        let currentYear = currentDate.getFullYear();
+        let currentMonth = currentDate.getMonth(); // 0-11
+
+        // Clave para localStorage
+        const STORAGE_KEY = 'habitTracker';
+
+        // Colores pastel predefinidos (para nuevos hábitos)
+        const PASTEL_COLORS = [
+            '#FFB6C1', '#B0E0E6', '#C1E1C1', '#FFDAB9', '#E6E6FA',
+            '#F0E68C', '#D8BFD8', '#B0C4DE', '#F08080', '#AFEEEE',
+            '#98FB98', '#FFA07A', '#DB7093', '#87CEFA', '#FFDEAD'
+        ];
+
+        // Días de la semana
+        const WEEKDAYS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+
+        // Cargar datos desde localStorage
+        function loadFromStorage() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                try {
+                    const data = JSON.parse(stored);
+                    habits = data.habits || [];
+                    completions = data.completions || {};
+                } catch (e) {
+                    console.error('Error al cargar datos', e);
+                    resetToDefault();
+                }
+            } else {
+                resetToDefault();
+            }
+        }
+
+        // Valores por defecto si no hay datos
+        function resetToDefault() {
+            habits = [
+                { id: '1', name: 'Ejercicio', color: '#FFB6C1' },
+                { id: '2', name: 'Leer', color: '#B0E0E6' },
+                { id: '3', name: 'Meditar', color: '#C1E1C1' }
+            ];
+            completions = {};
+            saveToStorage();
+        }
+
+        // Guardar en localStorage
+        function saveToStorage() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({ habits, completions }));
+        }
+
+        // Generar ID único simple
+        function generateId() {
+            return Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Añadir nuevo hábito
+        function addHabit(name) {
+            if (!name.trim()) return;
+            const newHabit = {
+                id: generateId(),
+                name: name.trim(),
+                color: PASTEL_COLORS[habits.length % PASTEL_COLORS.length]
+            };
+            habits.push(newHabit);
+            saveToStorage();
+            renderAll();
+        }
+
+        // Eliminar hábito
+        function removeHabit(habitId) {
+            habits = habits.filter(h => h.id !== habitId);
+            // Limpiar completions de ese hábito
+            Object.keys(completions).forEach(date => {
+                delete completions[date][habitId];
+                if (Object.keys(completions[date]).length === 0) {
+                    delete completions[date];
+                }
+            });
+            saveToStorage();
+            renderAll();
+        }
+
+        // Alternar estado de un hábito en una fecha
+        function toggleHabit(dateStr, habitId) {
+            if (!completions[dateStr]) {
+                completions[dateStr] = {};
+            }
+            completions[dateStr][habitId] = !completions[dateStr][habitId];
+            // Si queda false, lo eliminamos para limpieza (opcional)
+            if (completions[dateStr][habitId] === false) {
+                delete completions[dateStr][habitId];
+                if (Object.keys(completions[dateStr]).length === 0) {
+                    delete completions[dateStr];
+                }
+            }
+            saveToStorage();
+            renderAll(); // Refrescamos todo para actualizar gráfico y calendario
+        }
+
+        // Obtener número de días en un mes
+        function getDaysInMonth(year, month) {
+            return new Date(year, month + 1, 0).getDate();
+        }
+
+        // Obtener el primer día de la semana (0 = domingo)
+        function getFirstDayOfMonth(year, month) {
+            return new Date(year, month, 1).getDay();
+        }
+
+        // Formatear fecha como YYYY-MM-DD
+        function formatDate(year, month, day) {
+            return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        }
+
+        // Renderizar la lista de hábitos
+        function renderHabitsList() {
+            const container = document.getElementById('habitsListContainer');
+            // Limpiar excepto el último div (add-habit)
+            const addDiv = container.querySelector('.add-habit');
+            container.innerHTML = '';
+            habits.forEach(habit => {
+                const habitDiv = document.createElement('div');
+                habitDiv.className = 'habit-item';
+                habitDiv.innerHTML = `
+                    <span class="habit-color" style="background: ${habit.color};"></span>
+                    <span class="habit-name">${habit.name}</span>
+                    <button class="remove-habit" data-id="${habit.id}">✕</button>
+                `;
+                container.appendChild(habitDiv);
+            });
+            container.appendChild(addDiv);
+
+            // Asignar eventos a botones de eliminar
+            document.querySelectorAll('.remove-habit').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    removeHabit(btn.dataset.id);
+                });
+            });
+        }
+
+        // Renderizar el calendario
+        function renderCalendar() {
+            const calendarDiv = document.getElementById('calendar');
+            const monthYearSpan = document.getElementById('monthYear');
+            const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            monthYearSpan.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+            // Cabeceras de días
+            let html = '';
+            WEEKDAYS.forEach(day => {
+                html += `<div class="weekday">${day}</div>`;
+            });
+
+            const firstDay = getFirstDayOfMonth(currentYear, currentMonth);
+            const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+
+            // Celdas vacías antes del día 1
+            for (let i = 0; i < firstDay; i++) {
+                html += `<div class="empty-cell"></div>`;
+            }
+
+            // Días del mes
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dateStr = formatDate(currentYear, currentMonth, d);
+                const dayCompletions = completions[dateStr] || {};
+
+                html += `<div class="day-cell">`;
+                html += `<div class="day-number">${d}</div>`;
+                html += `<div class="habits-row">`;
+
+                habits.forEach(habit => {
+                    const isDone = dayCompletions[habit.id] || false;
+                    html += `<div class="habit-circle ${isDone ? 'done' : ''}" 
+                        style="background: ${isDone ? habit.color : '#e0e0e0'};" 
+                        data-date="${dateStr}" 
+                        data-habit-id="${habit.id}"
+                        title="${habit.name}"></div>`;
+                });
+
+                html += `</div></div>`;
+            }
+
+            // Completar última semana con celdas vacías si es necesario
+            const totalCells = firstDay + daysInMonth;
+            const remaining = 7 - (totalCells % 7);
+            if (remaining < 7) {
+                for (let i = 0; i < remaining; i++) {
+                    html += `<div class="empty-cell"></div>`;
+                }
+            }
+
+            calendarDiv.innerHTML = html;
+
+            // Asignar eventos a los círculos de hábitos
+            document.querySelectorAll('.habit-circle').forEach(circle => {
+                circle.addEventListener('click', (e) => {
+                    const date = circle.dataset.date;
+                    const habitId = circle.dataset.habitId;
+                    toggleHabit(date, habitId);
+                });
+            });
+        }
+
+        // Renderizar gráfico de progreso
+        function renderGraph() {
+            const graphContainer = document.getElementById('graphContainer');
+            const overallPercentSpan = document.getElementById('overallPercent');
+            const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+            let totalPossible = 0;
+            let totalDone = 0;
+
+            let graphHtml = '';
+
+            habits.forEach(habit => {
+                let habitDoneCount = 0;
+                let habitDaysHtml = '';
+
+                for (let d = 1; d <= daysInMonth; d++) {
+                    const dateStr = formatDate(currentYear, currentMonth, d);
+                    const done = completions[dateStr]?.[habit.id] || false;
+                    if (done) habitDoneCount++;
+                    // Para el cómputo global
+                    totalPossible++;
+                    if (done) totalDone++;
+
+                    habitDaysHtml += `<div class="graph-day ${done ? 'done' : ''}" style="--color: ${habit.color};">
+                        ${d}
+                        <span class="graph-day-number"></span>
+                    </div>`;
+                }
+
+                const percent = ((habitDoneCount / daysInMonth) * 100).toFixed(1);
+                graphHtml += `
+                    <div class="habit-graph">
+                        <div class="habit-graph-header">
+                            <span class="habit-graph-color" style="background: ${habit.color};"></span>
+                            <span class="habit-graph-name">${habit.name}</span>
+                            <span class="habit-graph-percent">${percent}% (${habitDoneCount}/${daysInMonth})</span>
+                        </div>
+                        <div class="graph-grid">
+                            ${habitDaysHtml}
+                        </div>
+                    </div>
+                `;
+            });
+
+            graphContainer.innerHTML = graphHtml;
+
+            // Porcentaje global (promedio de todos los hábitos)
+            if (habits.length > 0) {
+                const overallPercent = ((totalDone / totalPossible) * 100).toFixed(1);
+                overallPercentSpan.textContent = `${overallPercent}% completado (${totalDone}/${totalPossible} checks)`;
+            } else {
+                overallPercentSpan.textContent = 'Añade hábitos para empezar';
+            }
+        }
+
+        // Renderizar todo
+        function renderAll() {
+            renderHabitsList();
+            renderCalendar();
+            renderGraph();
+        }
+
+        // Cambiar de mes
+        function changeMonth(delta) {
+            currentMonth += delta;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            } else if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderAll();
+        }
+
+        // Resetear todos los datos
+        function resetAllData() {
+            if (confirm('¿Estás seguro? Se borrarán todos los hábitos y progreso.')) {
+                resetToDefault();
+                renderAll();
+            }
+        }
+
+        // Inicialización
+        function init() {
+            loadFromStorage();
+            renderAll();
+
+            // Eventos
+            document.getElementById('prevMonth').addEventListener('click', () => changeMonth(-1));
+            document.getElementById('nextMonth').addEventListener('click', () => changeMonth(1));
+            document.getElementById('addHabitBtn').addEventListener('click', () => {
+                const input = document.getElementById('newHabitName');
+                addHabit(input.value);
+                input.value = '';
+            });
+            document.getElementById('newHabitName').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    document.getElementById('addHabitBtn').click();
+                }
+            });
+            document.getElementById('resetBtn').addEventListener('click', resetAllData);
+        }
+
+        init();
+    })();
+</script>
+</body>
+</html>
